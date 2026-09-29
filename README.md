@@ -1,8 +1,8 @@
-#CDR Generator & Analyzer
+CDR Generator & Analyzer
 
 This is a simple Python data-engineering project that generates fake Call Detail Records and stores them in CSV format. At the end it calculates caller statistics.
 
-#Features:
+Features:
 
 * Generates 1,000 fake CDRs with 25 distinct callers
 * Writes data to "cdrs.csv"
@@ -14,11 +14,11 @@ This is a simple Python data-engineering project that generates fake Call Detail
   - Call count
 As a result it prints out the top 5 callers by answered duration.
 
-#CDR Columns
+CDR Columns
 
 "call_id, caller, callee, start_ts, duration_s, status"
 
-#Run
+Run
 
 ```bash
 python cdr_generator.py
@@ -30,5 +30,4 @@ Data Engineering Concepts:
 
 This project demonstrates synthetic data generation, CSV I/O, aggregation, derived metrics, sorting, and reproducible processing.
 
-> Note: "call_id" is generated with "uuid.uuid4()", so the CSV is not completely byte-for-byte reproducible. The generated call attributes and analysis results are deterministic.
-******
+Note: "call_id" is generated with "uuid.uuid4()", so the CSV is not completely byte-for-byte reproducible. The generated call attributes and analysis results are deterministic.
