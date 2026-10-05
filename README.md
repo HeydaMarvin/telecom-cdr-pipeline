@@ -18,12 +18,12 @@ As a result it prints out the top 5 callers by answered duration.
 
 "call_id, caller, callee, start_ts, duration_s, status"
 
-Run
+### Run
 
 ```bash
 python CDR.py
 ```
-### Sample output:
+#### Sample output:
 
 Top 5 callers by answered duration:
 ---------------------------------------------------------------------------
@@ -37,10 +37,29 @@ Caller             Answered Duration (s)    Failure Rate    Call Count
 
 No external dependencies are required - only Python standard library is used.
 
-This project combines my current work experience as Care Engineer in a Telecom company with my future career pursuit.  
+This project combines my current work experience as Care Engineer for a Session Border Controller product with my future career pursuit.  
 
 Data Engineering Concepts:
 
 This project demonstrates synthetic data generation, CSV I/O, aggregation, derived metrics, sorting, and reproducible processing.
 
 Note: "call_id" is generated with "uuid.uuid4()", so the CSV is not completely byte-for-byte reproducible. The generated call attributes and analysis results are deterministic.
+
+###### Bronze and stats:
+
+```
+Top 5 callers by answered duration:
+caller	      answered_duration_s	   failure_rate         	call_count
++48123451014	48431	                 0.08771929824561403	  57
++48123451007	42938	                 0.08888888888888889	  45
++48123451021	37006	                 0.043478260869565216  	46
++48123451020	33031	                 0.10638297872340426	  47
++48123451002	31714	                 0.1875	                48
+```
+
+####### Roadmap:
+
+[x] Bronze: raw CSV from the volume loaded into a Delta table with an explicit schema, plus ingest metadata (load time, source file).
+[ ] Silver: cleaning and validation. Make the generator produce messy data on purpose: duplicate call_ids, nulls, negative durations, ANSWERED calls with 0 s. Then dedupe, validate, and route bad rows to a             quarantine table.
+[ ] Gold: telecom KPIs per caller and per hour: ASR (answer-seizure ratio) and ACD (average call duration).Incremental loads: new daily CDR files merged into silver with MERGE, safe to re-run.
+    Orchestration: a Databricks Workflow running bronze → silver → gold on a schedule, plus pytest tests for the transform functions.
