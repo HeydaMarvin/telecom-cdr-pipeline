@@ -2,11 +2,17 @@ import csv
 import uuid
 import random
 from datetime import datetime, timedelta, timezone
-from collections import defaultdict
+from collections import defaultdict, Counter
 
 
 STATUSES = ("ANSWERED", "FAILED", "BUSY")
 
+DIRTY_KINDS = (
+    "null_caller",
+    "negative_duration",
+    "answered_zero",
+    "bad_timestamp",
+)
 
 def generate_cdrs(
     filename="cdrs.csv",
@@ -14,10 +20,13 @@ def generate_cdrs(
     num_callers=25,
     seed=42,
     base_time=datetime(2026, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
-    dirty_rate=0.0
+    dirty_rate=0.0,
 ):
     """Generate deterministic CDRs and write them to a CSV file."""
     rng = random.Random(seed)
+    dirty_rng = random.Random(seed + 1)
+    injected = Counter()
+
     callers = [f"+4812345{1000 + i:04d}" for i in range(num_callers)]
 
     with open(filename, "w", newline="", encoding="utf-8") as f:
@@ -66,7 +75,23 @@ def generate_cdrs(
                     "status": status,
                 }
             )
-            record = corrupt(record, kind)
+
+            record = {
+                "call_id": str(uuid.uuid4()),
+                "caller": caller,
+                "callee": callee,
+                "start_ts": start_ts.isoformat(),
+                "duration_s": duration_s,
+                "status": status,
+            }
+
+            if dirty_rng.random() < dirty_rate:
+                kind = dirty_rng.choice(DIRTY_KINDS)
+                record = corrupt(record, kind)
+                injected[kind] += 1
+
+            writer.writerow(record)
+    return injected
 
 def analyze_cdrs(filename="cdrs.csv"):
     """Read CDRs and compute per-caller statistics."""
@@ -131,13 +156,14 @@ def corrupt(record, kind):
     """Return a corrupted copy of a CDR record."""
     bad = dict(record)          # copy, don't mutate the original
     if kind == "null_caller":
-        bad["caller"] = ""
+        bad["caller"] = "NULL"
     elif kind == "negative_duration":
-        bad["duration_s"] = "" 
+        bad["duration_s"] = -1
     elif kind == "answered_zero":
-        bad["status"] = ""
+        bad["status"] = "ANSWERED"
+        bad["duration_s"] = 0
     elif kind == "bad_timestamp":
-        bad["duration_s"] = "" 
+        bad["start_ts"] = "not_a_timestamp"
     return bad
 
 def main():
@@ -153,6 +179,9 @@ def main():
     stats = analyze_cdrs(filename)
     print_top_callers(stats)
 
+    print("\nInjected corruptions:")
+    for kind, count in injected.items():
+        print(f"{kind}: {count}")
 
 if __name__ == "__main__":
     main()
