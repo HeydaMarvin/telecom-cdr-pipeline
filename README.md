@@ -18,12 +18,12 @@ As a result it prints out the top 5 callers by answered duration.
 
 "call_id, caller, callee, start_ts, duration_s, status"
 
-Run
+### Run
 
 ```bash
 python CDR.py
 ```
-### Sample output:
+#### Sample output:
 
 Top 5 callers by answered duration:
 ---------------------------------------------------------------------------
