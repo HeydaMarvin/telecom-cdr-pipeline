@@ -14,6 +14,7 @@ def generate_cdrs(
     num_callers=25,
     seed=42,
     base_time=datetime(2026, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
+    dirty_rate=0.0
 ):
     """Generate deterministic CDRs and write them to a CSV file."""
     rng = random.Random(seed)
@@ -65,7 +66,7 @@ def generate_cdrs(
                     "status": status,
                 }
             )
-
+            record = corrupt(record, kind)
 
 def analyze_cdrs(filename="cdrs.csv"):
     """Read CDRs and compute per-caller statistics."""
@@ -126,7 +127,18 @@ def print_top_callers(stats, top_n=5):
             f"{data['failure_rate']:>15.2%}"
             f"{data['call_count']:>14}"
         )
-
+def corrupt(record, kind):
+    """Return a corrupted copy of a CDR record."""
+    bad = dict(record)          # copy, don't mutate the original
+    if kind == "null_caller":
+        bad["caller"] = ""
+    elif kind == "negative_duration":
+        bad["duration_s"] = "" 
+    elif kind == "answered_zero":
+        bad["status"] = ""
+    elif kind == "bad_timestamp":
+        bad["duration_s"] = "" 
+    return bad
 
 def main():
     filename = "cdrs.csv"
