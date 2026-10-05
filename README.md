@@ -44,3 +44,11 @@ Data Engineering Concepts:
 This project demonstrates synthetic data generation, CSV I/O, aggregation, derived metrics, sorting, and reproducible processing.
 
 Note: "call_id" is generated with "uuid.uuid4()", so the CSV is not completely byte-for-byte reproducible. The generated call attributes and analysis results are deterministic.
+
+##### Roadmap:
+
+Bronze: raw CSV from the volume loaded into a Delta table with an explicit schema, plus ingest metadata (load time, source file).
+Silver: cleaning and validation. Make the generator produce messy data on purpose: duplicate call_ids, nulls, negative durations, ANSWERED calls with 0 s. Then dedupe, validate, and route bad rows to a quarantine table.
+Gold: telecom KPIs per caller and per hour: ASR (answer-seizure ratio) and ACD (average call duration).
+Incremental loads: new daily CDR files merged into silver with MERGE, safe to re-run.
+Orchestration: a Databricks Workflow running bronze → silver → gold on a schedule, plus pytest tests for the transform functions.
