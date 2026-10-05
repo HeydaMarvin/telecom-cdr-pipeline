@@ -37,7 +37,7 @@ Caller             Answered Duration (s)    Failure Rate    Call Count
 
 No external dependencies are required - only Python standard library is used.
 
-This project combines my current work experience as Care Engineer in a Telecom company with my future career pursuit.  
+This project combines my current work experience as Care Engineer for a Session Border Controller product with my future career pursuit.  
 
 Data Engineering Concepts:
 
