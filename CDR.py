@@ -12,6 +12,7 @@ DIRTY_KINDS = (
     "negative_duration",
     "answered_zero",
     "bad_timestamp",
+    "duplicate",
 )
 
 def generate_cdrs(
@@ -164,8 +165,12 @@ def corrupt(record, kind):
     return bad
 
 def main():
-    filename = "cdrs.csv"
 
+    generate_cdrs(
+        filename = "cdrs.csv",
+        seed = 42,
+        base_time = datetime(2026, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
+    )
     injected = generate_cdrs(
         filename="cdrs_dirty.csv",
         dirty_rate=0.05,
@@ -174,7 +179,7 @@ def main():
             2026, 1, 1, 12, 0, 0, tzinfo=timezone.utc
         ),
     )
-    stats = analyze_cdrs(filename)
+    stats = analyze_cdrs("cdrs_dirty.csv")
     print_top_callers(stats)
 
     print("\nInjected corruptions:")
