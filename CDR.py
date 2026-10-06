@@ -65,17 +65,6 @@ def generate_cdrs(
                 else 0
             )
 
-            writer.writerow(
-                {
-                    "call_id": str(uuid.uuid4()),
-                    "caller": caller,
-                    "callee": callee,
-                    "start_ts": start_ts.isoformat(),
-                    "duration_s": duration_s,
-                    "status": status,
-                }
-            )
-
             record = {
                 "call_id": str(uuid.uuid4()),
                 "caller": caller,
@@ -169,7 +158,7 @@ def corrupt(record, kind):
 def main():
     filename = "cdrs.csv"
 
-    generate_cdrs(
+    injected = generate_cdrs(
         filename=filename,
         seed=42,
         base_time=datetime(
