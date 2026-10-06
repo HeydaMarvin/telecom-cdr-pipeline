@@ -23,6 +23,8 @@ As a result it prints out the top 5 callers by answered duration.
 ```bash
 python CDR.py
 ```
+
+```
 #### Sample output:
 
 Top 5 callers by answered duration:
@@ -41,6 +43,7 @@ answered_zero: 14
 duplicate: 12
 bad_timestamp: 9
 null_caller: 19
+```
 
 No external dependencies are required - only Python standard library is used.
 
