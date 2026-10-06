@@ -179,7 +179,7 @@ def main():
             2026, 1, 1, 12, 0, 0, tzinfo=timezone.utc
         ),
     )
-    stats = analyze_cdrs("cdrs_dirty.csv")
+    stats = analyze_cdrs("cdrs.csv")
     print_top_callers(stats)
 
     print("\nInjected corruptions:")
