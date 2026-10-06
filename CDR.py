@@ -43,6 +43,7 @@ def generate_cdrs(
         )
         writer.writeheader()
 
+        written = []
 
         for _ in range(num_records):
             caller = rng.choice(callers)
@@ -74,12 +75,19 @@ def generate_cdrs(
                 "status": status,
             }
 
+            kind = None
             if dirty_rng.random() < dirty_rate:
                 kind = dirty_rng.choice(DIRTY_KINDS)
-                record = corrupt(record, kind)
                 injected[kind] += 1
+                if kind != "duplicate":
+                    record = corrupt(record, kind)
 
             writer.writerow(record)
+            written.append(record)
+
+            if kind == "duplicate":
+                writer.writerow(dirty_rng.choice(written))  # extra row, same call_id
+
     return injected
 
 def analyze_cdrs(filename="cdrs.csv"):
@@ -159,7 +167,8 @@ def main():
     filename = "cdrs.csv"
 
     injected = generate_cdrs(
-        filename=filename,
+        filename="cdrs_dirty.csv",
+        dirty_rate=0.05,
         seed=42,
         base_time=datetime(
             2026, 1, 1, 12, 0, 0, tzinfo=timezone.utc
