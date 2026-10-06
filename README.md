@@ -36,10 +36,11 @@ Caller             Answered Duration (s)    Failure Rate    Call Count
 +48123451002                       31714         18.75%            48
 
 Injected corruptions:
-negative_duration: 12
-answered_zero: 16
-null_caller: 23
-bad_timestamp: 11
+negative_duration: 10
+answered_zero: 14
+duplicate: 12
+bad_timestamp: 9
+null_caller: 19
 
 No external dependencies are required - only Python standard library is used.
 
