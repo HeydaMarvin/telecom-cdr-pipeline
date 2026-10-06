@@ -24,9 +24,10 @@ As a result it prints out the top 5 callers by answered duration.
 python CDR.py
 ```
 
-```
+
 #### Sample output:
 
+```
 Top 5 callers by answered duration:
 ---------------------------------------------------------------------------
 Caller             Answered Duration (s)    Failure Rate    Call Count
