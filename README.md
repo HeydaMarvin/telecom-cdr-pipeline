@@ -72,7 +72,7 @@ Failure = `FAILED` only; `BUSY` is not counted as a failure.
 ## Roadmap
 
 - [x] Bronze: raw CSV in a Unity Catalog volume → Delta table with explicit schema
-- [ ] Silver: deliberately dirty input → dedupe, validate, quarantine bad rows
+- [x] Silver: deliberately dirty input → dedupe, validate, quarantine bad rows
 - [ ] Gold: telecom KPIs per caller and per hour — ASR, ACD
 - [ ] Incremental loads: daily files merged into silver with `MERGE`, safe to re-run
 - [ ] Orchestration: Databricks Workflow (bronze → silver → gold) + pytest
