@@ -69,10 +69,21 @@ caller         answered_duration_s  failure_rate  call_count
 
 Failure = `FAILED` only; `BUSY` is not counted as a failure.
 
+## Gold layer (Databricks)
+
+| Table |                  | Grain |                       | KPIs |
+| `gold_caller_kpis` | one row per caller | attempts, answered, ASR %, ACD (s) |
+| `gold_hourly_kpis` | one row per hour | attempts, answered, ASR %, ACD (s) |
+
+- **ASR** = answered / attempts × 100 — share of call attempts that reached the B-party
+- **ACD** = answered seconds / answered calls — average length of answered calls
+- Overall ASR 75.7%; per-caller ASR ranges 69.8–82.9%
+- Every layer ends with a reconciliation assert (bronze = silver + quarantine; gold totals = silver totals)
+
 ## Roadmap
 
 - [x] Bronze: raw CSV in a Unity Catalog volume → Delta table with explicit schema
 - [x] Silver: deliberately dirty input → dedupe, validate, quarantine bad rows
-- [ ] Gold: telecom KPIs per caller and per hour — ASR, ACD
+- [x] Gold: telecom KPIs per caller and per hour — ASR, ACD
 - [ ] Incremental loads: daily files merged into silver with `MERGE`, safe to re-run
 - [ ] Orchestration: Databricks Workflow (bronze → silver → gold) + pytest
