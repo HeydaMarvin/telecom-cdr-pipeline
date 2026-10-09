@@ -186,5 +186,15 @@ def main():
     for kind, count in injected.items():
         print(f"{kind}: {count}")
 
+    injected_day2 = generate_cdrs(
+        filename="cdrs_day2.csv",
+        seed=43,
+        base_time=datetime(2026, 1, 2, 12, 0, 0, tzinfo=timezone.utc),
+        dirty_rate=0.05,
+    )
+    print("\nDay 2 injected corruptions:")
+    for kind, count in injected_day2.items():
+        print(f"{kind}: {count}")
+
 if __name__ == "__main__":
     main()
